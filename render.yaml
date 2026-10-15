@@ -1,0 +1,33 @@
+# Render Blueprint: New > Blueprint, pick this repository, then fill in the secret values.
+# Values marked `sync: false` are prompted for in the dashboard and never stored in git.
+services:
+  - type: web
+    name: whatsapp-ai-assistant
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: WA_ENV
+        value: prod
+      - key: WA_LLM_PROVIDER
+        value: auto
+      - key: WA_LLM_MODEL
+        value: claude-opus-5-5
+      - key: WA_LLM_EFFORT
+        value: low
+      - key: WA_GRAPH_VERSION
+        value: v23.0
+      - key: WA_VERIFY_TOKEN
+        sync: false
+      - key: WA_APP_SECRET
+        sync: false
+      - key: WA_ACCESS_TOKEN
+        sync: false
+      - key: WA_PHONE_NUMBER_ID
+        sync: false
+      - key: WA_OWNER_PHONE
+        sync: false
+      - key: WA_ADMIN_TOKEN
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

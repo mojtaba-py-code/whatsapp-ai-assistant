@@ -1,0 +1,38 @@
+# --- secrets & local configuration (never commit) ---
+.env
+.env.*
+!.env.example
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# --- runtime data (SQLite database) ---
+var/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.log
+
+# --- local tool settings ---
+.claude/
+
+# --- editors / os ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

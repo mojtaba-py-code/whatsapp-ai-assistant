@@ -1,0 +1,54 @@
+# Business configuration for the demo clinic. Everything here is FICTIONAL demo data.
+# Read with the standard-library `tomllib`; point WA_DATA_DIR at another folder to use your own.
+
+[business]
+name = "Clínica Dental Sonrisa"
+timezone = "America/Argentina/Buenos_Aires"
+default_language = "es"   # es | pt | en - used until a customer's language is detected
+owner_language = "es"     # language of the alerts sent to WA_OWNER_PHONE
+
+# Opening hours per weekday, 24-hour "HH:MM-HH:MM". Leave a day out (or set "") when closed.
+[hours]
+mon = "09:00-19:00"
+tue = "09:00-19:00"
+wed = "09:00-19:00"
+thu = "09:00-19:00"
+fri = "09:00-19:00"
+sat = "09:00-13:00"
+sun = ""
+
+[booking]
+appointment_minutes = 30   # an appointment must end by closing time
+max_days_ahead = 60        # how far ahead a date may be requested
+
+# Services offered in the booking flow, in the order they are listed to the customer.
+# Prices are NOT here on purpose: the bot only quotes prices from the knowledge base.
+[[services]]
+id = "checkup"
+es = "Consulta y control general"
+pt = "Consulta e avaliação geral"
+en = "General check-up"
+
+[[services]]
+id = "cleaning"
+es = "Limpieza dental"
+pt = "Limpeza dental"
+en = "Dental cleaning"
+
+[[services]]
+id = "whitening"
+es = "Blanqueamiento"
+pt = "Clareamento"
+en = "Teeth whitening"
+
+[[services]]
+id = "orthodontics"
+es = "Consulta de ortodoncia"
+pt = "Consulta de ortodontia"
+en = "Orthodontics consultation"
+
+[[services]]
+id = "kids"
+es = "Odontopediatría (niños)"
+pt = "Odontopediatria (crianças)"
+en = "Children's dentistry"

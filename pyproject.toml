@@ -1,0 +1,162 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "whatsapp-ai-assistant"
+version = "1.0.0"
+description = "WhatsApp AI customer-service assistant: grounded answers from business documents (BM25 RAG), a deterministic appointment-booking flow, human handoff and a hardened WhatsApp Cloud API webhook."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Mojtaba Karimi" }]
+requires-python = ">=3.12"
+keywords = ["whatsapp", "chatbot", "customer-service", "rag", "bm25", "claude", "fastapi", "webhook"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Natural Language :: Portuguese",
+    "Natural Language :: Spanish",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Chat",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+dependencies = [
+    # --- api ---------------------------------------------------------------------------
+    "fastapi>=0.143,<0.144",
+    "uvicorn>=0.54,<1",
+    # --- validation / configuration ------------------------------------------------------
+    "pydantic>=2.14,<3",
+    "pydantic-settings>=2.16,<3",
+    # --- llm + outbound http ---------------------------------------------------------------
+    "anthropic>=1.14,<2",
+    "httpx2>=2.13,<3",                # maintained, API-compatible httpx fork (the SDK's own stack)
+    # --- time zones (Windows and slim images ship no IANA database) --------------------------
+    "tzdata>=2026.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1,<10",
+    "pytest-cov>=7.1,<8",
+    "ruff>=0.17,<0.18",
+    "mypy>=2.4,<3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wa_assistant"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/wa_assistant", "data", "README.md", "LICENSE"]
+
+# ---------------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+# The project may sit inside another repository whose .gitignore would hide it from ruff.
+respect-gitignore = false
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "N", "UP", "B", "A", "C4", "DTZ", "T20", "SIM", "RET", "PTH",
+    "ERA", "PL", "RUF", "ASYNC", "PERF", "S", "BLE", "LOG", "G", "PIE", "TID", "ISC",
+    "FURB", "SLOT", "FAST",
+]
+ignore = [
+    "PLR0913",  # explicit dependency injection legitimately needs several parameters
+    "PLR2004",  # magic values are clearer inline for HTTP status codes and limits
+    "ISC001",   # conflicts with the formatter
+    "N818",     # domain exceptions read as outcomes, not *Error
+    "FAST002",  # Query/Header parameters are declared with defaults on purpose
+    "E501",     # the formatter owns line length; long prose (prompts, replies) stays unbroken
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Localized strings and accent folding must spell out non-ASCII characters on purpose.
+"src/wa_assistant/i18n.py" = ["RUF001"]
+"src/wa_assistant/text.py" = ["RUF001"]
+"tests/**/*.py" = [
+    "S101", "S105", "S106", "S311", "PLR0915", "PLC0415", "ARG", "SLF001", "RUF001",
+    "RUF003", "E501", "PLR0911",
+]
+"src/wa_assistant/simulate.py" = ["T201"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"pickle".msg = "Insecure deserialization: never use pickle."
+"requests".msg = "Outbound HTTP goes through httpx2 (wa_assistant.whatsapp)."
+"httpx".msg = "Use httpx2 (the HTTP stack the Anthropic SDK uses)."
+
+[tool.ruff.lint.pylint]
+max-args = 9
+max-returns = 8
+max-branches = 16
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = true
+line-ending = "lf"
+
+# ---------------------------------------------------------------------------
+# MyPy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool", "possibly-undefined"]
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+files = ["src/wa_assistant", "tests"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[[tool.mypy.overrides]]
+# Test bodies are still type-checked (strict implies check_untyped_defs); only
+# the annotations on test functions and pytest fixtures are optional.
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+# ---------------------------------------------------------------------------
+# Pytest / coverage
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = ["-ra", "--strict-markers", "--strict-config", "-p", "no:cacheprovider"]
+filterwarnings = [
+    "error",
+    "ignore::ResourceWarning",
+]
+
+[tool.coverage.run]
+source = ["wa_assistant"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.$",
+    "if __name__ == .__main__.:",
+]

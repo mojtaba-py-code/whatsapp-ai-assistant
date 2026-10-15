@@ -1,0 +1,48 @@
+# Continuous integration: lint, format, strict typing and the test suite with coverage on
+# Python 3.12 and 3.13. Read-only token, no secrets, no network calls from the tests.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "1"
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  checks:
+    name: Lint, types and tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the package with the dev extras
+        run: python -m pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Format (ruff format)
+        run: ruff format --check .
+      - name: Types (mypy, strict)
+        run: mypy
+      - name: Tests with coverage
+        run: pytest --cov --cov-report=term
