@@ -143,7 +143,7 @@ class Repository:
             msg = f"unknown column {column}"
             raise ValueError(msg)
         self._write(
-            f"INSERT INTO conversations (wa_id, {column}, updated_at) VALUES (?, ?, ?) "  # noqa: S608 - column is whitelisted above
+            f"INSERT INTO conversations (wa_id, {column}, updated_at) VALUES (?, ?, ?) "  # noqa: S608  # nosec B608 - column is whitelisted above
             f"ON CONFLICT (wa_id) DO UPDATE SET {column} = excluded.{column}, updated_at = excluded.updated_at",
             (wa_id, value, _iso(now)),
         )

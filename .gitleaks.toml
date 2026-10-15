@@ -1,0 +1,8 @@
+# Default gitleaks rules, plus one allowlist: the test suite uses obviously fake
+# Anthropic keys ("sk-ant-test...") to check that real ones are never logged.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Fake Anthropic keys used only by the tests"
+regexes = ['''^sk-ant-test(-not-a-real-key)?$''']

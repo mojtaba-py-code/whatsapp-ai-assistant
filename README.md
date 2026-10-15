@@ -1,5 +1,10 @@
 # WhatsApp AI Assistant
 
+[![CI](https://github.com/mojtaba-py-code/whatsapp-ai-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/mojtaba-py-code/whatsapp-ai-assistant/actions/workflows/ci.yml)
+[![Security](https://github.com/mojtaba-py-code/whatsapp-ai-assistant/actions/workflows/security.yml/badge.svg)](https://github.com/mojtaba-py-code/whatsapp-ai-assistant/actions/workflows/security.yml)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A WhatsApp customer-service assistant for small businesses, built on the official
 **WhatsApp Cloud API**. It answers customers' questions from the business's own documents,
 takes appointment requests through a guided step-by-step flow, and hands the conversation to

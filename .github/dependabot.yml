@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # Actions are pinned to a commit SHA, so nothing moves unless Dependabot
+  # proposes it and CI agrees.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    groups:
+      dev-tooling:
+        patterns: ["ruff", "mypy", "pytest*"]
+
+  # The image ships the app, so a base-image CVE is as much ours as a
+  # dependency CVE.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: docker
