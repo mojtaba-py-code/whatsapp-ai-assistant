@@ -35,7 +35,7 @@ dependencies = [
     "pydantic>=2.14,<3",
     "pydantic-settings>=2.16,<3",
     # --- llm + outbound http ---------------------------------------------------------------
-    "anthropic>=1.14,<2",
+    "anthropic>=1.14,<3",
     "httpx2>=2.13,<3",                # maintained, API-compatible httpx fork (the SDK's own stack)
     # --- time zones (Windows and slim images ship no IANA database) --------------------------
     "tzdata>=2026.5",
