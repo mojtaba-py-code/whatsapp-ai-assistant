@@ -1,6 +1,6 @@
 # WhatsApp AI Assistant - production image.
 # Slim Python 3.12, dependencies installed as root, the app runs as an unprivileged user.
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
